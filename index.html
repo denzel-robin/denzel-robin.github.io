@@ -103,9 +103,14 @@ p { margin: 0; }
 .bars { display: grid; gap: 6px; }
 .bar { display: grid; grid-template-columns: 74px minmax(0,1fr) 54px; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .bar .track { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
-.bar .fill { height: 100%; border-radius: 4px; background: var(--muted); }
+.bar .track { display: block; }
+.bar .fill { display: block; height: 100%; border-radius: 4px; background: var(--muted); }
 .bar.mine .fill { background: var(--accent-2); }
 .bar.mine { color: var(--ink); }
+.bar.field-mine .fill { background: var(--accent); }
+.bar.field-mine { color: var(--ink); }
+.projlinks { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.minor.one { grid-template-columns: minmax(0, 1fr); max-width: 620px; }
 
 /* Experience */
 .jobs { display: grid; gap: 28px; }
@@ -213,6 +218,33 @@ footer h2 { font-size: 28px; }
         <p class="note">Compared against the same model trained on lab images only.</p>
       </aside>
     </article>
+    <article class="project">
+      <div class="text">
+        <span class="label">Feb 2026</span>
+        <h3>Crop Recommender: what 99% accuracy hides</h3>
+        <p class="sub">A popular 22-crop Kaggle dataset gets about 99% accuracy almost everywhere online. I traced why, then tested crop recommendation on real government soil data and deployed a web app.</p>
+        <ul>
+          <li>Reverse-engineered the benchmark from its author's source files, showing its "soil nutrient" values are uniform random draws around one fertilizer dose per crop and its climate data is copied from another table, which explains the ~99% accuracies reported online.</li>
+          <li>Benchmarked 6 classifiers with stratified 10-fold cross-validation (Random Forest 99.55%, only 1.7 points above an untuned 1-NN baseline) and showed through noise stress tests that the top model is the least robust: at 20% input noise it fell to 90.6% while 1-NN held 94.1%.</li>
+          <li>Validated on 1,651 real government Soil Health Card records by reframing the task as multi-label crop ranking with grouped cross-validation; reached 87.9% precision@3, but found soil adds only 1.5 points over a village-only baseline and fails on unseen villages.</li>
+          <li>Deployed a Shiny web app that ranks crops from 7 soil and climate readings and checks each against 246k real district crop-production records (area, yield vs state), with unusual-input warnings; reproducible with renv, testthat and CI.</li>
+        </ul>
+        <div class="tags"><span class="tag">R</span><span class="tag">tidymodels</span><span class="tag">ranger</span><span class="tag">Shiny</span><span class="tag">GitHub Actions</span></div>
+        <div class="projlinks"><a href="https://denzel-robin.shinyapps.io/crop-recommender/" target="_blank" rel="noopener">Try the live demo →</a><a href="https://github.com/denzel-robin/crop-recommender" target="_blank" rel="noopener">View on GitHub →</a></div>
+      </div>
+      <aside class="readout field" aria-label="Crop Recommender results">
+        <div class="row"><span class="label">Random Forest, 10-fold CV</span><span class="val">99.55%</span><span class="note">Only 1.7 points above an untuned 1-NN baseline.</span></div>
+        <div class="row">
+          <span class="label">Accuracy at 20% noise</span>
+          <div class="bars">
+            <div class="bar field-mine"><span>1-NN</span><span class="track"><span class="fill" style="width:94.1%"></span></span><span>94.1%</span></div>
+            <div class="bar"><span>RF</span><span class="track"><span class="fill" style="width:90.6%"></span></span><span>90.6%</span></div>
+          </div>
+        </div>
+        <div class="row"><span class="label">Real Soil Health Cards</span><span class="val">87.9% <small>precision@3</small></span></div>
+        <p class="note">1,651 government records; 246k district crop-production records in the app.</p>
+      </aside>
+    </article>
   </section>
 
   <section class="sec" aria-labelledby="exp-h">
@@ -224,7 +256,7 @@ footer h2 { font-size: 28px; }
           <h3>Agricultural Research &amp; Technology Lead <span class="now">Current</span></h3>
           <span class="org">Akkattumundakal Estates · Kozhikode, Kerala</span>
           <ul>
-            <li>Lead applied agricultural research for a private estate. Field problems here led to the CropAdapt and crop-recommendation projects; the advanced versions are proprietary.</li>
+            <li>Lead applied agricultural research for a private estate. Field problems here were the origin of CropAdapt and the crop recommender; the advanced versions are proprietary.</li>
             <li>Manage a team of 4 running field research, experiment testing, record-keeping and project maintenance.</li>
             <li>IT in-charge: maintain CCTV, computers and software, and diagnose and fix hardware and software faults.</li>
           </ul>
@@ -247,13 +279,7 @@ footer h2 { font-size: 28px; }
 
   <section class="sec" aria-labelledby="more-h">
     <div class="sec-head"><h2 id="more-h">Other projects</h2></div>
-    <div class="minor">
-      <div class="card">
-        <span class="when">Feb 2026</span>
-        <h3>Crop recommendation system</h3>
-        <p>An XGBoost model that recommends crops from soil N/P/K, temperature and rainfall. Packaged with Docker behind a React interface.</p>
-        <div class="tags"><span class="tag">R</span><span class="tag">XGBoost</span><span class="tag">React</span><span class="tag">Docker</span></div>
-      </div>
+    <div class="minor one">
       <div class="card">
         <span class="when">Sep – Oct 2025</span>
         <h3>AI-NPC-Game-2D</h3>
@@ -267,10 +293,10 @@ footer h2 { font-size: 28px; }
     <div class="sec-head"><h2 id="skills-h">Skills</h2></div>
     <div class="skills">
       <div class="skill"><span class="label">Languages</span><div class="items"><span>Python</span><span>C/C++</span><span>Java</span><span>SQL</span><span>R</span><span>JavaScript</span><span>HTML/CSS</span></div></div>
-      <div class="skill"><span class="label">AI / ML</span><div class="items"><span>PyTorch</span><span>TensorFlow</span><span>XGBoost</span><span>LoRA</span><span>Domain adaptation</span><span>Video super-resolution</span><span>Time-series forecasting</span></div></div>
-      <div class="skill"><span class="label">Video &amp; libraries</span><div class="items"><span>FFmpeg</span><span>x264 / H.264</span><span>PyAV</span><span>OpenCV</span><span>NumPy</span><span>Pandas</span><span>Matplotlib</span><span>React</span></div></div>
+      <div class="skill"><span class="label">AI / ML</span><div class="items"><span>PyTorch</span><span>TensorFlow</span><span>LoRA</span><span>Domain adaptation</span><span>Video super-resolution</span><span>Time-series forecasting</span></div></div>
+      <div class="skill"><span class="label">Video &amp; libraries</span><div class="items"><span>FFmpeg</span><span>x264 / H.264</span><span>PyAV</span><span>OpenCV</span><span>NumPy</span><span>Pandas</span><span>Matplotlib</span><span>tidymodels</span><span>Shiny</span></div></div>
       <div class="skill"><span class="label">Systems</span><div class="items"><span>Arch Linux</span><span>NVIDIA drivers &amp; CUDA</span><span>Kernel modules</span><span>tc-netem</span><span>Shell scripting</span></div></div>
-      <div class="skill"><span class="label">Tools</span><div class="items"><span>Git</span><span>Docker</span><span>Jenkins</span><span>pytest</span><span>Kaggle</span><span>Neovim</span><span>VS Code</span></div></div>
+      <div class="skill"><span class="label">Tools</span><div class="items"><span>Git</span><span>Docker</span><span>GitHub Actions</span><span>Jenkins</span><span>pytest</span><span>Kaggle</span><span>Neovim</span><span>VS Code</span></div></div>
     </div>
   </section>
 
