@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Denzel Robin: machine learning and computer vision. Live video super-resolution, crop disease detection, traffic forecasting.">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}</style>
+<title>Denzel Robin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one left-aligned reading column; project "readouts" sit beside prose like instrument panels on a lab bench. */
+:root {
+  --bg: #f2f4f3;
+  --surface: #ffffff;
+  --ink: #15201b;
+  --muted: #56645d;
+  --line: #d5ddd8;
+  --accent: #1f7a52;      /* chlorophyll green: field research */
+  --accent-2: #2b5fa8;    /* signal blue: video / compute */
+  --accent-soft: #e2efe8;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101513; --surface: #171e1b; --ink: #e4ebe7; --muted: #98a8a0;
+    --line: #2a3530; --accent: #5cc493; --accent-2: #7ea8e8; --accent-soft: #1b2c24;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101513; --surface: #171e1b; --ink: #e4ebe7; --muted: #98a8a0;
+  --line: #2a3530; --accent: #5cc493; --accent-2: #7ea8e8; --accent-soft: #1b2c24;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 56px 72px; display: grid; gap: 72px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.label {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Hero */
+.hero { display: grid; gap: 20px; }
+.hero h1 { font-size: clamp(44px, 8vw, 84px); font-weight: 700; line-height: .95; letter-spacing: -.02em; }
+.hero .lede { font-size: clamp(18px, 2.2vw, 21px); max-width: 60ch; color: var(--ink); }
+.hero .lede em { font-style: normal; color: var(--accent); font-weight: 600; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 15px; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font: 500 14px var(--body); text-decoration: none; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); }
+.btn .mono { font-family: var(--mono); font-size: 13px; }
+
+/* Section heads */
+.sec { display: grid; gap: 28px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.sec-head h2 { font-size: 28px; font-weight: 700; }
+
+/* Projects */
+.project { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; align-items: start; }
+.project + .project { border-top: 1px dashed var(--line); padding-top: 36px; }
+.project .text { display: grid; gap: 14px; min-width: 0; }
+.project h3 { font-size: 24px; font-weight: 700; line-height: 1.2; }
+.project .sub { color: var(--muted); font-size: 15px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-family: var(--mono); font-size: 12px; padding: 3px 8px; border-radius: 5px; background: var(--accent-soft); color: var(--ink); }
+.project ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.project li::marker { color: var(--accent); }
+
+.readout {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 18px; display: grid; gap: 14px; font-variant-numeric: tabular-nums;
+}
+.readout .row { display: grid; gap: 2px; }
+.readout .val { font-family: var(--mono); font-size: 26px; font-weight: 500; line-height: 1.1; }
+.readout .val small { font-size: 14px; color: var(--muted); }
+.readout .val .vs { color: var(--muted); font-size: 16px; }
+.readout.video .val { color: var(--accent-2); }
+.readout.field .val { color: var(--accent); }
+.readout .note { font-size: 13px; color: var(--muted); }
+
+/* Compare bar (UpStream latency) */
+.bars { display: grid; gap: 6px; }
+.bar { display: grid; grid-template-columns: 74px minmax(0,1fr) 54px; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.bar .track { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 4px; background: var(--muted); }
+.bar.mine .fill { background: var(--accent-2); }
+.bar.mine { color: var(--ink); }
+
+/* Experience */
+.jobs { display: grid; gap: 28px; }
+.job { display: grid; grid-template-columns: 180px minmax(0,1fr); gap: 24px; }
+.job .when { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 4px; }
+.job .what { display: grid; gap: 8px; min-width: 0; }
+.job h3 { font-size: 20px; font-weight: 700; }
+.job .org { color: var(--muted); }
+.job ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.now { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 1px 6px; margin-left: 8px; vertical-align: middle; }
+
+/* Smaller projects + skills */
+.minor { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.card h3 { font-size: 18px; font-weight: 700; }
+.card .when { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.skills { display: grid; gap: 14px; }
+.skill { display: grid; grid-template-columns: 180px minmax(0,1fr); gap: 24px; }
+.skill .items { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill .items span { font-size: 14px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+
+footer { display: grid; gap: 14px; border-top: 1px solid var(--line); padding-top: 28px; }
+footer h2 { font-size: 28px; }
+.toast { font-family: var(--mono); font-size: 12px; color: var(--accent); min-height: 1em; }
+
+@media (max-width: 760px) {
+  .wrap { gap: 56px; padding-block: 36px 56px; }
+  .project { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .job, .skill { grid-template-columns: minmax(0,1fr); gap: 6px; }
+  .minor { grid-template-columns: minmax(0,1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar .fill { transition: width .8s ease; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="label">Machine learning · Computer vision · Kozhikode, Kerala</span>
+    <h1>Denzel Robin</h1>
+    <p class="lede">I build small, fast neural networks that hold up outside the lab: <em>live video super-resolution</em> that fits a 33&nbsp;ms frame budget, and <em>crop-disease models</em> that carry over from lab photos to real fields.</p>
+    <div class="meta">
+      <span>B.Tech Computer Science, IIIT Kottayam · CGPA 8.54 · 2023–2027</span>
+    </div>
+    <div class="links">
+      <button class="btn" id="copy-email" type="button"><span class="mono">denzelrobin2004@gmail.com</span> Copy</button>
+      <a class="btn" href="https://github.com/denzel-robin" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/denzel-robin" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <span class="toast" id="toast" aria-live="polite"></span>
+  </header>
+
+  <section class="sec" aria-labelledby="work-h">
+    <div class="sec-head"><h2 id="work-h">Research</h2><span class="label">2026</span></div>
+
+    <article class="project">
+      <div class="text">
+        <span class="label">Aug – Nov 2026</span>
+        <h3>UpStream: adaptive live video super-resolution</h3>
+        <p class="sub">A live streaming system that decides, frame by frame, whether to send 720p directly or send lower resolution and upscale ×2 or ×4 on the GPU, within a 33&nbsp;ms deadline.</p>
+        <ul>
+          <li>Designed <strong>UpStreamVSR</strong>, a 217K-parameter super-resolution model conditioned on the encoder's CRF, with early exits so it can stop when time runs out.</li>
+          <li>Trained on real compressed video (StreamSR) on Kaggle GPUs.</li>
+          <li>Beat CDA-VSR, NanoVSR, SPAN and EfRLFN at every bitrate tested.</li>
+          <li>In the live system: +0.95–1.33&nbsp;dB viewer PSNR over the same pipeline with published models, at 55–62% of their GPU power. Beat every fixed delivery mode by up to 1.5&nbsp;dB over tc-netem-shaped TCP.</li>
+          <li>Ablations drove the design: dropping recurrent memory cost under 0.05&nbsp;dB and made ×4 65% faster; a backlog guard halved late frames and p95 latency.</li>
+        </ul>
+        <div class="tags"><span class="tag">PyTorch</span><span class="tag">FFmpeg</span><span class="tag">PyAV</span><span class="tag">x264</span><span class="tag">tc-netem</span></div>
+        <a href="https://github.com/denzel-robin/UpStream" target="_blank" rel="noopener">View on GitHub →</a>
+      </div>
+      <aside class="readout video" aria-label="UpStream results">
+        <div class="row"><span class="label">PSNR at ×4</span><span class="val">33.09 <small>dB</small> <span class="vs">vs 32.62</span></span></div>
+        <div class="row">
+          <span class="label">Time per frame</span>
+          <div class="bars">
+            <div class="bar mine"><span>UpStream</span><span class="track"><span class="fill" style="width:12%"></span></span><span>5.0 ms</span></div>
+            <div class="bar"><span>Best prior</span><span class="track"><span class="fill" style="width:100%"></span></span><span>41.8 ms</span></div>
+          </div>
+        </div>
+        <div class="row"><span class="label">Model size</span><span class="val">217K <small>params</small></span></div>
+        <p class="note">Compared against the strongest of four recent published models.</p>
+      </aside>
+    </article>
+
+    <article class="project">
+      <div class="text">
+        <span class="label">Aug – Nov 2026</span>
+        <h3>CropAdapt: plant disease detection from lab to field</h3>
+        <p class="sub">Classifiers trained on clean lab photos (PlantVillage) fail on messy field photos (PlantDoc). CropAdapt closes part of that gap across 16 disease classes. It grew out of problems seen on the estate where I work.</p>
+        <ul>
+          <li>Fine-tuned DINOv2 ViT-S/14 with attention LoRA, training 0.7% of the weights.</li>
+          <li>Designed a discrimination-guided, feature-weighted MMD loss: it aligns features that shift between domains while leaving the class-separating ones alone, tuned each epoch by a class-separation controller.</li>
+          <li>Ran ablations against standard MMD, bounded weights and controller smoothing.</li>
+        </ul>
+        <div class="tags"><span class="tag">PyTorch</span><span class="tag">DINOv2</span><span class="tag">LoRA</span><span class="tag">Domain adaptation</span></div>
+        <a href="https://github.com/denzel-robin/CropAdapt" target="_blank" rel="noopener">View on GitHub →</a>
+      </div>
+      <aside class="readout field" aria-label="CropAdapt results">
+        <div class="row"><span class="label">Field accuracy</span><span class="val">48.7% <span class="vs">from 45.0%</span></span></div>
+        <div class="row"><span class="label">Macro-F1</span><span class="val">0.420 <span class="vs">from 0.397</span></span></div>
+        <div class="row"><span class="label">Trainable weights</span><span class="val">153K <small>of 22.2M</small></span></div>
+        <p class="note">Compared against the same model trained on lab images only.</p>
+      </aside>
+    </article>
+  </section>
+
+  <section class="sec" aria-labelledby="exp-h">
+    <div class="sec-head"><h2 id="exp-h">Experience</h2></div>
+    <div class="jobs">
+      <div class="job">
+        <span class="when">Aug 2023 – Present</span>
+        <div class="what">
+          <h3>Agricultural Research &amp; Technology Lead <span class="now">Current</span></h3>
+          <span class="org">Akkattumundakal Estates · Kozhikode, Kerala</span>
+          <ul>
+            <li>Lead applied agricultural research for a private estate. Field problems here led to the CropAdapt and crop-recommendation projects; the advanced versions are proprietary.</li>
+            <li>Manage a team of 4 running field research, experiment testing, record-keeping and project maintenance.</li>
+            <li>IT in-charge: maintain CCTV, computers and software, and diagnose and fix hardware and software faults.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="job">
+        <span class="when">May – Jul 2025</span>
+        <div class="what">
+          <h3>Research Intern</h3>
+          <span class="org">National Institute of Technology Calicut</span>
+          <ul>
+            <li>Built a hybrid Transformer + Mamba (state space model) network that forecasts traffic flow at every junction in a city at once.</li>
+            <li>Tuned the model to capture how traffic at one junction affects others over time.</li>
+            <li>Results: MAE 21.37, RMSE 32.85, MAPE 18.36%.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="more-h">
+    <div class="sec-head"><h2 id="more-h">Other projects</h2></div>
+    <div class="minor">
+      <div class="card">
+        <span class="when">Feb 2026</span>
+        <h3>Crop recommendation system</h3>
+        <p>An XGBoost model that recommends crops from soil N/P/K, temperature and rainfall. Packaged with Docker behind a React interface.</p>
+        <div class="tags"><span class="tag">R</span><span class="tag">XGBoost</span><span class="tag">React</span><span class="tag">Docker</span></div>
+      </div>
+      <div class="card">
+        <span class="when">Sep – Oct 2025</span>
+        <h3>AI-NPC-Game-2D</h3>
+        <p>A 2D game with an LLM-powered character that remembers what the player said and replies in context. Built the player, the map and the dialogue level.</p>
+        <div class="tags"><span class="tag">Godot</span><span class="tag">DeepSeek-R1</span><span class="tag">Git</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="skills-h">
+    <div class="sec-head"><h2 id="skills-h">Skills</h2></div>
+    <div class="skills">
+      <div class="skill"><span class="label">Languages</span><div class="items"><span>Python</span><span>C/C++</span><span>Java</span><span>SQL</span><span>R</span><span>JavaScript</span><span>HTML/CSS</span></div></div>
+      <div class="skill"><span class="label">AI / ML</span><div class="items"><span>PyTorch</span><span>TensorFlow</span><span>XGBoost</span><span>LoRA</span><span>Domain adaptation</span><span>Video super-resolution</span><span>Time-series forecasting</span></div></div>
+      <div class="skill"><span class="label">Video &amp; libraries</span><div class="items"><span>FFmpeg</span><span>x264 / H.264</span><span>PyAV</span><span>OpenCV</span><span>NumPy</span><span>Pandas</span><span>Matplotlib</span><span>React</span></div></div>
+      <div class="skill"><span class="label">Systems</span><div class="items"><span>Arch Linux</span><span>NVIDIA drivers &amp; CUDA</span><span>Kernel modules</span><span>tc-netem</span><span>Shell scripting</span></div></div>
+      <div class="skill"><span class="label">Tools</span><div class="items"><span>Git</span><span>Docker</span><span>Jenkins</span><span>pytest</span><span>Kaggle</span><span>Neovim</span><span>VS Code</span></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <h2>Get in touch</h2>
+    <p>Open to ML, computer vision and research engineering roles.</p>
+    <div class="links">
+      <button class="btn" id="copy-email-2" type="button"><span class="mono">denzelrobin2004@gmail.com</span> Copy</button>
+      <a class="btn" href="https://github.com/denzel-robin" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/denzel-robin" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <span class="toast" id="toast-2" aria-live="polite"></span>
+  </footer>
+</div>
+
+<script>
+  const EMAIL = "denzelrobin2004@gmail.com";
+  function wire(btnId, toastId) {
+    const btn = document.getElementById(btnId), toast = document.getElementById(toastId);
+    btn.addEventListener("click", () => {
+      const done = () => { toast.textContent = "Email copied"; setTimeout(() => toast.textContent = "", 2000); };
+      const fallback = () => {
+        const r = document.createRange(); r.selectNodeContents(btn.querySelector(".mono"));
+        const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+        toast.textContent = "Selected. Press Ctrl+C to copy";
+      };
+      try { navigator.clipboard.writeText(EMAIL).then(done, fallback); } catch (e) { fallback(); }
+    });
+  }
+  wire("copy-email", "toast"); wire("copy-email-2", "toast-2");
+</script>
+</body>
+</html>
